@@ -1,15 +1,14 @@
 package main
 
 import (
-	"os"
-
 	"github.com/gin-gonic/gin"
+	helpers "github.com/horlabyc/golang-jwt-project/helpers"
 )
 
 func main() {
-	port := os.Getenv("PORT")
+	port := helpers.LoadEnv("PORT")
 	if port == "" {
-		port = "8080"
+		port = "3000"
 	}
 	router := gin.New()
 	router.Use(gin.Logger())
