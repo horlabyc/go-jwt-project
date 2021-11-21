@@ -12,7 +12,9 @@ import (
 	"github.com/horlabyc/golang-jwt-project/helpers"
 	"github.com/horlabyc/golang-jwt-project/models"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 var userCollection = database.OpenCollection(database.Client, "users")
@@ -74,4 +76,32 @@ func GetUsers() gin.HandlerFunc {
 		}
 		c.JSON(http.StatusOK, allusers[0])
 	}
+}
+
+func UpdateAllTokens(signedToken string, signedRefreshToken string, userId *string) {
+	var ctx, cancel = context.WithTimeout(context.Background(), 30*time.Second)
+	var updateData primitive.D
+	updateData = append(updateData, bson.E{"token", signedToken})
+	updateData = append(updateData, bson.E{"refreshToken", signedRefreshToken})
+	time := time.Now().String()
+	updateData = append(updateData, bson.E{"updatedAt", time})
+	upsert := true
+	options := options.UpdateOptions{
+		Upsert: &upsert,
+	}
+	filter := bson.M{"userId": userId}
+	_, err := userCollection.UpdateOne(
+		ctx,
+		filter,
+		bson.D{
+			{"$set", updateData},
+		},
+		&options,
+	)
+	defer cancel()
+	if err != nil {
+		log.Panic(err)
+		return
+	}
+	return
 }
