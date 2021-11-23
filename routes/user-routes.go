@@ -8,6 +8,6 @@ import (
 
 func UserRoutes(router *gin.Engine) {
 	router.Use(middleware.Authenticate())
-	router.POST("users", controller.GetUsers())
+	router.GET("users", controller.GetUsers())
 	router.GET("users/:userId", controller.GetUser())
 }

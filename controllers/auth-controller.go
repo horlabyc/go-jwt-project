@@ -106,7 +106,7 @@ func Login() gin.HandlerFunc {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "email or password is incorrect"})
 			return
 		}
-		passwordIsValid, msg := verifyPassword(*user.Password, *foundUser.Password)
+		passwordIsValid, msg := verifyPassword(*foundUser.Password, *user.Password)
 		if passwordIsValid != true {
 			c.JSON(http.StatusBadRequest, gin.H{"error": msg})
 			return

@@ -63,7 +63,7 @@ func GetUsers() gin.HandlerFunc {
 			{"$project", bson.D{
 				{"_id", 0},
 				{"total_count", 1},
-				{"user_items", bson.D{{"$slice", []interface{}{"$data", skip, limit}}}}}}}
+				{"users", bson.D{{"$slice", []interface{}{"$data", skip, limit}}}}}}}
 		result, err := userCollection.Aggregate(ctx, mongo.Pipeline{
 			match, group, projectStage})
 		defer cancel()
